@@ -1,12 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Algotest
 {
-    public class PriorityQueue<T> where T : IComparable<T>
+    public class PriorityQueue<T>
     {
         List<T> nodes = new List<T>();
+
+        private readonly IComparer<T> comparer;
+
+        public PriorityQueue(IComparer<T> comparer)
+        {
+            this.comparer = comparer;
+        }
 
         public int Count => nodes.Count;
 
@@ -20,7 +27,7 @@ namespace Algotest
         {
             int parent = (index - 1) / 2;
 
-            if (parent >= 0 && nodes[parent].CompareTo(nodes[index]) > 0)
+            if (parent >= 0 && this.comparer.Compare(nodes[parent],nodes[index]) > 0)
             {
                 swap(parent, index);
                 HeapifyUp(parent);
@@ -31,22 +38,22 @@ namespace Algotest
         {
             int left = 2 * index + 1;
             int right = 2 * index + 2;
-            int smallest = index;
+            int thresHold = index;
 
-            if (left < Count && nodes[smallest].CompareTo(nodes[left]) > 0)
+            if (left < Count && this.comparer.Compare(nodes[thresHold],nodes[left]) > 0)
             {
-                smallest = left;
+                thresHold = left;
             }
 
-            if (right < Count && nodes[smallest].CompareTo(nodes[right]) > 0)
+            if (right < Count && this.comparer.Compare(nodes[thresHold], nodes[right]) > 0)
             {
-                smallest = right;
+                thresHold = right;
             }
 
-            if (smallest != index)
+            if (thresHold != index)
             {
-                swap(smallest, index);
-                Heapify(smallest);
+                swap(thresHold, index);
+                Heapify(thresHold);
             }
         }
 
